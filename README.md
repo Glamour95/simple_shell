@@ -1,6 +1,6 @@
 ###Simple Shell
 
-This project is in collaboration of Glamour Maphanga and 
+This project is in collaboration of Glamour Maphanga and Hoja Tesema 
 
 This is a project for Holberton School's curriculum, where we were asked to implement a simple UNIX command interpreter.
 
