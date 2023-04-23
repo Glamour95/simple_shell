@@ -1,4 +1,5 @@
 #include "header.h"
+#include "shell.h"
 
 /**
  * get_history_file - gets the history

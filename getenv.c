@@ -1,4 +1,5 @@
 #include "header.h"
+#include "shell.h"
 
 /**
  * get_environ - returns the string array

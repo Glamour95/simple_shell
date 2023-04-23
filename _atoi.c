@@ -1,5 +1,5 @@
-#include <stdio.h>
-#include <ctype.h>
+#include "header.h"
+#include "shell.h"
 
 /**
  * interactive - check if shell is interactive

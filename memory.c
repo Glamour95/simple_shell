@@ -1,4 +1,5 @@
 #include "header.h"
+#include "shell.h"
 
 /**
  * free_and_nullify - frees a pointer and sets it to NULL
