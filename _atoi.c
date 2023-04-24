@@ -2,7 +2,7 @@
 #include "shell.h"
 
 /*
- * interactive - checks if shell is in interactive mode
+ * interactive - check if the shell is interactive
  * @info: pointer to info struct
  * Return: 1 if interactive else 0
  */
@@ -52,7 +52,7 @@ int _atoi(char *s)
 {
 	int sign = 1;
 	int res = 0;
-	
+
 	if (*s == '-')
 	{
 		sign = -1;

@@ -10,7 +10,7 @@
 char *get_history_file(info_t *info)
 {
 	char *buf, *dir;
-	
+
 	if (!info)
 		return (NULL);
 	dir = _getenv(info, "HOME=");
@@ -39,6 +39,7 @@ int write_history(info_t *info)
 	ssize_t fd;
 	char *filename = NULL;
 	list_t *node = NULL;
+
 	if (!info || !info->history)
 		return (-1);
 	filename = get_history_file(info);
@@ -68,7 +69,7 @@ int read_history(info_t *info)
 	ssize_t fd, rdlen, fsize = 0;
 	struct stat st;
 	char *buf = NULL, *filename = NULL;
-	
+
 	if (!info)
 		return (0);
 	filename = get_history_file(info);

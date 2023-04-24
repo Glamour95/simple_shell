@@ -75,7 +75,7 @@ int replace_alias(info_t *info)
 	int i;
 	list_t *node;
 	char *p;
-	
+
 	for (i = 0; i < 10; i++)
 	{
 		node = node_starts_with(info->alias, info->argv[0], '=');
@@ -101,7 +101,7 @@ int replace_vars(info_t *info)
 	int i;
 	list_t *node;
 	char *value;
-	
+
 	for (i = 0; info->argv[i]; i++)
 	{
 		if (info->argv[i][0] != '$' || !info->argv[i][1])
@@ -132,7 +132,7 @@ int replace_string(char **old, char *new)
 {
 	int old_len = strlen(*old);
 	int new_len = strlen(new);
-	
+
 	if (*old == NULL || new == NULL)
 	{
 		return (0);

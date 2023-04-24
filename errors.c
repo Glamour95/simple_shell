@@ -42,11 +42,11 @@ int _putfd(char c, int fd)
 	static int i;
 	static char buf[WRITE_BUF_SIZE];
 	ssize_t wlen;
-	
+
 	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
 	{
 		wlen = write(fd, buf, i);
-		
+
 		if (wlen == -1)
 			return (-1);
 		i = 0;

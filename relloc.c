@@ -19,7 +19,7 @@ char *_memset(char *dest, char value, unsigned int size)
 }
 
 /**
- * free - frees a string of strings
+ * ffree - frees a string of strings
  * @str_array: string of strings
  */
 

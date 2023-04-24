@@ -33,7 +33,7 @@ char *_strdup(const char *str)
 {
 	int length;
 	char *ret;
-	
+
 	if (str == NULL)
 		return (NULL);
 	length = strlen(str);
