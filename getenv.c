@@ -9,10 +9,12 @@
 
 char **get_environ(info_t *info)
 {
+	if (!info)
+		return (NULL);
 	if (!info->environ || info->env_changed)
 	{
-		free(info->environ);
-		info->environ = getenv(info->env);
+		bfree((void **)&(info->environ));
+		info->environ = list_to_strings(info->env);
 		info->env_changed = 0;
 	}
 	return (info->environ);

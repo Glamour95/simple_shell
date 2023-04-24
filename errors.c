@@ -39,36 +39,20 @@ int _eputchar(char c)
 
 int _putfd(char c, int fd)
 {
-	if (write(fd, &c, 1) == -1)
-	{
-		return (-1);
-	}
-	return (1);
-}
-/**
- * _putfd - writes the character c to a given file
- * @c: The character to print
- * @fd: The filedescriptor to write to
- * Return: On success 1 else -1
- */
-
-int _putfd(char c, int fd)
-{
 	static int i;
 	static char buf[WRITE_BUF_SIZE];
-
+	ssize_t wlen;
+	
 	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
 	{
-		if (write(fd, buf, i) == -1)
-		{
+		wlen = write(fd, buf, i);
+		
+		if (wlen == -1)
 			return (-1);
-		}
 		i = 0;
 	}
 	if (c != BUF_FLUSH)
-	{
 		buf[i++] = c;
-	}
 	return (1);
 }
 

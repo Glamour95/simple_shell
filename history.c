@@ -9,21 +9,23 @@
 
 char *get_history_file(info_t *info)
 {
-	char *home = _getenv("HOME=");
-	char *file = "HIST_FILE";
-	char *path;
-	int len;
-
-	if (home == NULL || file == NULL)
+	char *buf, *dir;
+	
+	if (!info)
 		return (NULL);
-	len = _strlen(home) + _strlen(file) + 2;
-	path = malloc(sizeof(char) * len);
-	if (path == NULL)
+	dir = _getenv(info, "HOME=");
+	if (!dir)
 		return (NULL);
-	_strcpy(path, home);
-	_strcat(path, "/");
-	_strcat(path, file);
-	return (path);
+	buf = _strdup(dir);
+	if (!buf)
+		return (NULL);
+	buf = _realloc(buf, _strlen(buf) + 1, _strlen(buf)
+			+ _strlen(HIST_FILE) + 2);
+	if (!buf)
+		return (NULL);
+	_strcat(buf, "/");
+	_strcat(buf, HIST_FILE);
+	return (buf);
 }
 
 /**
@@ -34,25 +36,23 @@ char *get_history_file(info_t *info)
 
 int write_history(info_t *info)
 {
-	char *file;
-	int fd;
-	ssize_t bytes;
-
-	if (info == NULL)
+	ssize_t fd;
+	char *filename = NULL;
+	list_t *node = NULL;
+	if (!info || !info->history)
 		return (-1);
-	file = get_history_file(info);
-	if (file == NULL)
+	filename = get_history_file(info);
+	if (!filename)
 		return (-1);
-	fd = open(file, O_WRONLY |
-			O_CREAT | O_APPEND, 0600);
+	fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0644);
+	free(filename);
 	if (fd == -1)
 		return (-1);
-	bytes = write(fd, info->line,
-			_strlen(info->line));
-	if (bytes == -1)
-		return (-1);
+	for (node = info->history; node; node = node->next)
+	{
+		dprintf(fd, "%s\n", node->str);
+	}
 	close(fd);
-	free(file);
 	return (1);
 }
 
@@ -64,28 +64,41 @@ int write_history(info_t *info)
 
 int read_history(info_t *info)
 {
-	int fd;
-	char *file;
-	char *buf = NULL;
-	size_t len = 0;
-	ssize_t bytes;
-	int linecount = 0;
-
-	if (info == NULL)
+	int i, last = 0, linecount = 0;
+	ssize_t fd, rdlen, fsize = 0;
+	struct stat st;
+	char *buf = NULL, *filename = NULL;
+	
+	if (!info)
 		return (0);
-	file = get_history_file(info);
-	if (file == NULL)
+	filename = get_history_file(info);
+	if (!filename)
 		return (0);
-	fd = open(file, O_RDONLY);
+	fd = open(filename, O_RDONLY);
+	free(filename);
 	if (fd == -1)
 		return (0);
-	while ((bytes = getline(&buf, &len, fd)) != -1)
-	{
-		buf[bytes - 1] = 0;
-		build_history_list(info, buf, linecount++);
-	}
+	if (fstat(fd, &st) == 0)
+		fsize = st.st_size;
+	if (fsize < 2)
+		return (close(fd), 0);
+	buf = malloc(sizeof(char) * (fsize + 1));
+	if (!buf)
+		return (close(fd), 0);
+	rdlen = read(fd, buf, fsize);
+	buf[fsize] = 0;
+	if (rdlen <= 0)
+		return (free(buf), close(fd), 0);
 	close(fd);
-	free(file);
+	for (i = 0; i < fsize; i++)
+		if (buf[i] == '\n')
+		{
+			buf[i] = 0;
+			build_history_list(info, buf + last, linecount++);
+			last = i + 1;
+		}
+	if (last != i)
+		build_history_list(info, buf + last, linecount++);
 	free(buf);
 	info->histcount = linecount;
 	while (info->histcount-- >= HIST_MAX)
@@ -97,18 +110,18 @@ int read_history(info_t *info)
 /**
  * build_history_list - adds entry to a history linked list
  * @info: Struct containing arguments
- * @buffer: buffer containing the command
+ * @buf: buffer containing the command
  * @linecount: the history linecount, histcount
  * Return: Always 0
  */
 
-int build_history_list(info_t *info, char *buffer, int linecount)
+int build_history_list(info_t *info, char *buf, int linecount)
 {
 	list_t *node = NULL;
 
 	if (info->history)
 		node = info->history;
-	add_node_end(&node, buffer, linecount);
+	add_node_end(&node, buf, linecount);
 	if (!info->history)
 		info->history = node;
 	return (0);
