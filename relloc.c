@@ -1,4 +1,4 @@
-#include "header.h"
+/*#include "header.h"*/
 #include "shell.h"
 
 /**
@@ -23,14 +23,18 @@ char *_memset(char *dest, char value, unsigned int size)
  * @str_array: string of strings
  */
 
-void free(char **str_array)
+void ffree(char **pp)
 {
-	char **temp = str_array;
+	char **temp = pp;
 
-	if (!str_array)
+	if (!pp)
+	{
 		return;
-	while (*str_array)
-		free(*str_array++);
+	}
+	while (*pp)
+	{
+		free(*pp++);
+	}
 	free(temp);
 }
 

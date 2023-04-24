@@ -1,4 +1,4 @@
-#include "header.h"
+/*#include "header.h"*/
 #include "shell.h"
 
 /**
@@ -9,8 +9,8 @@
 
 char *get_history_file(info_t *info)
 {
-	char *home = _getenv("HOME");
-	char *file = ".simple_shell_history";
+	char *home = _getenv("HOME=");
+	char *file = "HIST_FILE";
 	char *path;
 	int len;
 
@@ -59,7 +59,7 @@ int write_history(info_t *info)
 /**
  * read_history - reads history
  * @info: the parameter struct
- * Return: Hcount on success else 0
+ * Return: Histcount on success else 0
  */
 
 int read_history(info_t *info)
@@ -98,7 +98,7 @@ int read_history(info_t *info)
  * build_history_list - adds entry to a history linked list
  * @info: Struct containing arguments
  * @buffer: buffer containing the command
- * @linecount: the history linecount, hcount
+ * @linecount: the history linecount, histcount
  * Return: Always 0
  */
 
@@ -117,7 +117,7 @@ int build_history_list(info_t *info, char *buffer, int linecount)
 /**
  * renumber_history - renumbers the history linked
  * @info: Struct containing arguments
- * Return: the new hcount
+ * Return: the new histcount
  */
 
 int renumber_history(info_t *info)
@@ -130,5 +130,5 @@ int renumber_history(info_t *info)
 		node->num = i++;
 		node = node->next;
 	}
-	return (info->hcount = i);
+	return (info->histcount = i);
 }

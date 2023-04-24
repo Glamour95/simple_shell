@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <ctype.h>
+#include "shell.h"
 
 /**
  * interactive - check if shell is interactive
@@ -48,14 +47,13 @@ int _isalpha(int c)
 int _atoi(char *s)
 {
 	int sign = 1;
-
+	int res = 0;
+	
 	if (*s == '-')
 	{
 		sign = -1;
 		s++;
 	}
-	int res = 0;
-
 	while (*s >= '0' && *s <= '9')
 	{
 		res = res * 10 + (*s - '0');

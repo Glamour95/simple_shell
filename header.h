@@ -24,9 +24,9 @@ int write_history(info_t *info);
 int read_history(info_t *info);
 int build_history_list(info_t *info, char *buffer, int linecount);
 int renumber_history(info_t *info);
-size_t list_len(const list_t *h);
+/*size_t list_len(const list_t *h);*/
 char **list_to_strings(list_t *head);
-size_t print_list(const list_t *h);
+/*size_t print_list(const list_t *h);*/
 list_t *node_starts_with(list_t *node, char *prefix, char next_char);
 char *starts_with(char *str, char *prefix);
 int free_and_nullify(void **ptr);

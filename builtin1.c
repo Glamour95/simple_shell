@@ -1,4 +1,4 @@
-#include "header.h"
+/*#include "header.h"*/
 #include "shell.h"
 
 /**
@@ -89,48 +89,30 @@ int show_alias(list_t *node)
 }
 
 /**
- * _myalias - mimics the alias
- * @info: Struct containing argument
- * Return: Always 0
+ * _myalias - mimics the alias command
+ * @info: pointer to info struct
+ * Return: 0 on success
  */
 
 int _myalias(info_t *info)
 {
-	char **args = NULL;
-	int i = 0;
-	char *p = NULL;
-
-	list_t *node = NULL;
-
-	args = split_string(info->arg, ' ');
-
-	if (!args)
-		return (1);
-	if (!args[0])
+	int i;
+	char *p;
+	list_t *node;
+	
+	if (info->argc == 1)
 	{
-		node = info->alias;
-		while (node)
-		{
+		for (node = info->alias; node; node = node->next)
 			print_alias(node);
-			node = node->next;
-		}
-		free(args);
 		return (0);
 	}
-	for (i = 0; args[i]; i++)
+	for (i = 1; info->argv[i]; i++)
 	{
-		p = _strchr(args[i], '=');
+		p = _strchr(info->argv[i], '=');
 		if (p)
-			set_alias(info, args[i]);
+			set_alias(info, info->argv[i]);
 		else
-		{
-			node = node_starts_with(info->alias, args[i], -1);
-			if (node)
-				print_alias(node);
-			else
-				perror("alias: not found");
-		}
+			print_alias(node_starts_with(info->alias, info->argv[i], '='));
 	}
-	free(args);
 	return (0);
 }

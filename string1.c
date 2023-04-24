@@ -1,4 +1,4 @@
-#include "header.h"
+/*#include "header.h"*/
 #include "shell.h"
 
 /**
@@ -31,18 +31,17 @@ char *_strcpy(char *dest, char *src)
 
 char *_strdup(const char *str)
 {
-	int length = 0;
-	char *dup;
-
+	int length;
+	char *ret;
+	
 	if (str == NULL)
 		return (NULL);
-	while (str[length] != '\0')
-		length++;
-	dup = malloc(sizeof(char) * (length + 1));
-	if (dup == NULL)
+	length = strlen(str);
+	ret = malloc(sizeof(char) * (length + 1));
+	if (ret == NULL)
 		return (NULL);
-	_strcpy(dup, str);
-	return (dup);
+	strcpy(ret, str);
+	return (ret);
 }
 
 /**

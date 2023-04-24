@@ -1,4 +1,4 @@
-#include "header.h"
+/*#include "header.h"*/
 #include "shell.h"
 
 /**
@@ -95,22 +95,22 @@ list_t *node_starts_with(list_t *node, char *prefix, char next_char)
 }
 
 /**
- * starts_with - checks if a string starts with a prefix
- * @str: the string to check
- * @prefix: the prefix to match
+ * get_node_index - checks if a string starts with a prefix
+ * @head: the string to check
+ * @node: the prefix to match
  * Return: pointer
  */
 
-char *starts_with(char *str, char *prefix)
+ssize_t get_node_index(list_t *head, list_t *node)
 {
-	if (str == NULL || prefix == NULL)
-		return (NULL);
-	while (*prefix)
+	ssize_t i = 0;
+
+	if (!head || !node)
+		return (-1);
+	while (head && head != node)
 	{
-		if (*str != *prefix)
-			return (NULL);
-		str++;
-		prefix++;
+		head = head->next;
+		i++;
 	}
-	return (str);
+	return (head ? i : -1);
 }

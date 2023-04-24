@@ -1,4 +1,4 @@
-#include "header.h"
+/*#include "header.h"*/
 #include "shell.h"
 
 /**
@@ -11,18 +11,25 @@
 
 int is_chain(info_t *info, char *buf, size_t *p)
 {
-	int i;
-
-	for (i = 0; i < info->chain_len; i++)
+	if (buf[*p] == '|' && buf[*p + 1] == '|')
 	{
-		if (buf[*p] == info->chain[i])
-		{
-			buf[*p] = 0;
-			(*p)++;
-			return (1);
-		}
+		buf[*p] = 0;
+		info->cmd_buf_type = CMD_OR;
 	}
-	return (0);
+	else if (buf[*p] == '&' && buf[*p + 1] == '&')
+	{
+		buf[*p] = 0;
+		info->cmd_buf_type = CMD_AND;
+	}
+	else if (buf[*p] == ';')
+	{
+		buf[*p] = 0;
+		info->cmd_buf_type = CMD_CHAIN;
+	}
+	else
+		return (0);
+	(*p)++;
+	return (1);
 }
 
 /**
@@ -65,23 +72,22 @@ void check_chain(info_t *info, char *buf, size_t *p, size_t i, size_t len)
 
 int replace_alias(info_t *info)
 {
-	int i, j;
-	char *alias;
-
-	for (i = 0; i < info->argc; i++)
+	int i;
+	list_t *node;
+	char *p;
+	
+	for (i = 0; i < 10; i++)
 	{
-		lias = get_alias(info->argv[i], info);
-		if (alias != NULL)
-		{
-			free(info->argv[i]);
-			info->argv[i] = _strdup(alias);
-
-			if (info->argv[i] == NULL)
-				return (0);
-			return (1);
-		}
+		node = node_starts_with(info->alias, info->argv[0], '=');
+		if (!node)
+			return (0);
+		p = _strdup(_strchr(node->str, '=') + 1);
+		if (!p)
+			return (0);
+		free(info->argv[0]);
+		info->argv[0] = p;
 	}
-	return (0);
+	return (1);
 }
 
 /**
@@ -93,28 +99,24 @@ int replace_alias(info_t *info)
 int replace_vars(info_t *info)
 {
 	int i;
-	char *var, *val;
-
-	for (i = 0; i < info->argc; i++)
+	list_t *node;
+	char *value;
+	
+	for (i = 0; info->argv[i]; i++)
 	{
-		if (info->argv[i][0] == '$')
+		if (info->argv[i][0] != '$' || !info->argv[i][1])
+			continue;
+		if (!_strcmp(info->argv[i], "$?"))
+			value = _strdup(convert_number(info->status, 10, 0));
+		else if (!_strcmp(info->argv[i], "$$"))
+			value = _strdup(convert_number(getpid(), 10, 0));
+		else
 		{
-			var = info->argv[i] + 1;
-			if (strcmp(var, "?") == 0)
-			{
-				val = get_exit_status();
-			}
-			else if (strcmp(var, "$") == 0)
-			{
-				val = get_pid();
-			}
-			else
-			{
-				val = get_env(var, info);
-			}
-			free(info->argv[i]);
-			info->argv[i] = strdup(val ? val : "");
+			node = node_starts_with(info->env, &info->argv[i][1], '=');
+			value = node ? _strdup(_strchr(node->str, '=')
+					+ 1) : _strdup("");
 		}
+		replace_string(&(info->argv[i]), value);
 	}
 	return (0);
 }
@@ -128,13 +130,13 @@ int replace_vars(info_t *info)
 
 int replace_string(char **old, char *new)
 {
+	int old_len = strlen(*old);
+	int new_len = strlen(new);
+	
 	if (*old == NULL || new == NULL)
 	{
 		return (0);
 	}
-	int old_len = strlen(*old);
-	int new_len = strlen(new);
-
 	if (new_len > old_len)
 	{
 		char *tmp = (char *) realloc(*old, new_len + 1);

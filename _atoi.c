@@ -1,15 +1,15 @@
-#include "header.h"
+/*#include "header.h"*/
 #include "shell.h"
 
-/**
- * interactive - check if shell is interactive
- * @info: address for struct
- * Return: 1 if true else 0
+/*
+ * interactive - checks if shell is in interactive mode
+ * @info: pointer to info struct
+ * Return: 1 if interactive else 0
  */
 
 int interactive(info_t *info)
 {
-	return (isatty(0));
+	return (isatty(STDIN_FILENO) && info->readfd <= 2);
 }
 
 /**
@@ -37,7 +37,10 @@ int is_delim(char c, char *delim)
 
 int _isalpha(int c)
 {
-	return (isalpha(c));
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+		return (1);
+	else
+		return (0);
 }
 /**
  * _atoi - converts string to integer
@@ -48,14 +51,13 @@ int _isalpha(int c)
 int _atoi(char *s)
 {
 	int sign = 1;
-
+	int res = 0;
+	
 	if (*s == '-')
 	{
 		sign = -1;
 		s++;
 	}
-	int res = 0;
-
 	while (*s >= '0' && *s <= '9')
 	{
 		res = res * 10 + (*s - '0');
