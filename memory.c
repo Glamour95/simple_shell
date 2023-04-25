@@ -1,4 +1,3 @@
-/*#include "header.h"*/
 #include "shell.h"
 
 /**
@@ -15,4 +14,3 @@ int bfree(void **ptr)
 	*ptr = NULL;
 	return (1);
 }
-

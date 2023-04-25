@@ -1,54 +1,39 @@
-/*#include "header.h"*/
 #include "shell.h"
 
 /**
- * _eputs - prints an input
+ * _eputs - prints an input string
  * @str: the string to be printed
+ *
  * Return: Nothing
  */
-
 void _eputs(char *str)
 {
+	int i = 0;
+
 	if (!str)
 		return;
-	printf("%s", str);
+	while (str[i] != '\0')
+	{
+		_eputchar(str[i]);
+		i++;
+	}
 }
 
 /**
  * _eputchar - writes the character c to stderr
  * @c: The character to print
- * Return: On success 1 else -1
- */
-
-int _eputchar(char c)
-{
-	if (write(2, &c, 1) == -1)
-	{
-		return (-1);
-	}
-	return (1);
-}
-
-/**
- * _putfd - writes the character c to given fd
- * @c: The character to print
- * @fd: The filedescriptor to write to
  *
- * Return: On success 1 else -1
+ * Return: On success 1.
+ * On error, -1 is returned, and errno is set appropriately.
  */
-
-int _putfd(char c, int fd)
+int _eputchar(char c)
 {
 	static int i;
 	static char buf[WRITE_BUF_SIZE];
-	ssize_t wlen;
 
 	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
 	{
-		wlen = write(fd, buf, i);
-
-		if (wlen == -1)
-			return (-1);
+		write(2, buf, i);
 		i = 0;
 	}
 	if (c != BUF_FLUSH)
@@ -57,35 +42,45 @@ int _putfd(char c, int fd)
 }
 
 /**
- * _putsfd - prints an input string to a given file
+ * _putfd - writes the character c to given fd
+ * @c: The character to print
+ * @fd: The filedescriptor to write to
+ *
+ * Return: On success 1.
+ * On error, -1 is returned, and errno is set appropriately.
+ */
+int _putfd(char c, int fd)
+{
+	static int i;
+	static char buf[WRITE_BUF_SIZE];
+
+	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
+	{
+		write(fd, buf, i);
+		i = 0;
+	}
+	if (c != BUF_FLUSH)
+		buf[i++] = c;
+	return (1);
+}
+
+/**
+ * _putsfd - prints an input string
  * @str: the string to be printed
  * @fd: the filedescriptor to write to
- * Return: the number of chars put on success, or -1 on error.
+ *
+ * Return: the number of chars put
  */
-
 int _putsfd(char *str, int fd)
 {
 	int i = 0;
-	int count = 0;
-	int result;
 
 	if (!str)
+		return (0);
+	while (*str)
 	{
-		return (-1);
+		i += _putfd(*str++, fd);
 	}
-	while (str[i])
-	{
-		result = _putfd(str[i++], fd);
-		if (result == -1)
-		{
-			return (-1);
-		}
-		count += result;
-	}
-	result = _putfd(BUF_FLUSH, fd);
-	if (result == -1)
-	{
-		return (-1);
-	}
-	return (count);
+	return (i);
 }
+
