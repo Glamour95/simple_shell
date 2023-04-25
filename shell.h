@@ -5,8 +5,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <stddef.h>
-#include <stdbool.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
@@ -113,7 +111,7 @@ typedef struct builtin
 } builtin_table;
 
 
-/* toem_shell_loop.c */
+/* toem_shloop.c */
 int hsh(info_t *, char **);
 int find_builtin(info_t *);
 void find_cmd(info_t *);
@@ -133,7 +131,7 @@ int _eputchar(char);
 int _putfd(char c, int fd);
 int _putsfd(char *str, int fd);
 
-/* toem_shell_string.c */
+/* toem_string.c */
 int _strlen(char *);
 int _strcmp(char *, char *);
 char *starts_with(const char *, const char *);
@@ -168,7 +166,7 @@ int is_delim(char, char *);
 int _isalpha(int);
 int _atoi(char *);
 
-/* toem_errors_handling.c */
+/* toem_errors1.c */
 int _erratoi(char *);
 void print_error(info_t *, char *);
 int print_d(int, int);
@@ -184,17 +182,17 @@ int _myhelp(info_t *);
 int _myhistory(info_t *);
 int _myalias(info_t *);
 
-/*toem_shell_input.c */
+/*toem_getline.c */
 ssize_t get_input(info_t *);
 int _getline(info_t *, char **, size_t *);
 void sigintHandler(int);
 
-/* toem_info_utils.c */
+/* toem_getinfo.c */
 void clear_info(info_t *);
 void set_info(info_t *, char **);
 void free_info(info_t *, int);
 
-/* toem_env_handling.c */
+/* toem_environ.c */
 char *_getenv(info_t *, const char *);
 int _myenv(info_t *);
 int _mysetenv(info_t *);
@@ -213,7 +211,7 @@ int read_history(info_t *info);
 int build_history_list(info_t *info, char *buf, int linecount);
 int renumber_history(info_t *info);
 
-/* toem_shell_lists.c */
+/* toem_lists.c */
 list_t *add_node(list_t **, const char *, int);
 list_t *add_node_end(list_t **, const char *, int);
 size_t print_list_str(const list_t *);
